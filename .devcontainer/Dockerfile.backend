@@ -1,0 +1,38 @@
+# Backend Development Container
+FROM golang:1.21-alpine AS development
+
+# Install system dependencies including build tools for CGO
+RUN apk update && apk add --no-cache \
+    wget \
+    curl \
+    git \
+    bash \
+    make \
+    gcc \
+    musl-dev
+
+# Install Go development tools
+RUN go install github.com/cosmtrek/air@v1.49.0
+RUN CGO_ENABLED=1 go install github.com/go-delve/delve/cmd/dlv@v1.21.2
+
+# Set working directory
+WORKDIR /app
+
+# Copy go mod files first for better caching
+COPY backend/go.mod ./
+COPY backend/go.sum* ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY backend/ .
+
+# Create tmp directory
+RUN mkdir -p tmp
+
+# Expose ports (8080 for app, 2345 for debugger)
+EXPOSE 8080 2345
+
+# Start with Air for hot reloading
+CMD ["air", "-c", ".air.toml"]

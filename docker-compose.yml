@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile.backend
+    ports:
+      - "8080:8080"
+      - "2345:2345"  # Debug port
+    volumes:
+      - ./backend:/app
+      - /app/tmp  # Exclude tmp directory from volume mount
+    environment:
+      - GO_ENV=development
+      - PORT=8080
+    networks:
+      - tmember-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules  # Exclude node_modules from volume mount
+    environment:
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=http://backend:8080
+      - VITE_HOST=0.0.0.0
+      - VITE_PORT=3000
+      - BACKEND_URL=http://backend:8080
+    networks:
+      - tmember-network
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  tmember-network:
+    driver: bridge

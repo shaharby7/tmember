@@ -1,0 +1,16 @@
+{
+  "name": "tmember-integration-tests",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:e2e": "vitest --run e2e-echo-workflow.test.js",
+    "test:hot-reload": "vitest --run hot-reload.test.js",
+    "test:docker": "vitest --run docker-integration.test.js",
+    "test:all": "vitest --run"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.16"
+  }
+}
