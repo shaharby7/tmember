@@ -7,8 +7,6 @@ import (
 	"strings"
 	"testing"
 	"testing/quick"
-
-	"tmember/internal/models"
 )
 
 // TestHealthHandlerJSONResponse tests that the health endpoint always returns valid JSON
@@ -22,8 +20,8 @@ func TestHealthHandlerJSONResponse(t *testing.T) {
 		// Call the handler
 		HealthHandler(w, req)
 
-		// Check that response is 200 OK
-		if w.Code != http.StatusOK {
+		// Check that response is either 200 OK or 503 Service Unavailable (when DB is down)
+		if w.Code != http.StatusOK && w.Code != http.StatusServiceUnavailable {
 			return false
 		}
 
@@ -33,14 +31,17 @@ func TestHealthHandlerJSONResponse(t *testing.T) {
 			return false
 		}
 
-		// Check that response body is valid JSON
-		var response models.HealthResponse
+		// Check that response body is valid JSON with the actual response structure
+		var response struct {
+			Status   string `json:"status"`
+			Database string `json:"database"`
+		}
 		if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
 			return false
 		}
 
 		// Check that response contains expected structure
-		return response.Status != ""
+		return response.Status != "" && response.Database != ""
 	}
 
 	// Run the property test
@@ -56,9 +57,10 @@ func TestHealthHandlerKnownResponse(t *testing.T) {
 
 	HealthHandler(w, req)
 
-	// Check status code
-	if w.Code != http.StatusOK {
-		t.Errorf("Expected status %d, got %d", http.StatusOK, w.Code)
+	// In test environment, database is not initialized, so we expect 503
+	expectedStatusCode := http.StatusServiceUnavailable
+	if w.Code != expectedStatusCode {
+		t.Errorf("Expected status %d, got %d", expectedStatusCode, w.Code)
 	}
 
 	// Check content type
@@ -67,15 +69,24 @@ func TestHealthHandlerKnownResponse(t *testing.T) {
 		t.Errorf("Expected Content-Type %s, got %s", expectedContentType, contentType)
 	}
 
-	// Check response body
-	var response models.HealthResponse
+	// Check response body with actual response structure
+	var response struct {
+		Status   string `json:"status"`
+		Database string `json:"database"`
+	}
 	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
 		t.Errorf("Failed to unmarshal response: %v", err)
 	}
 
-	expectedStatus := "ok"
+	// In test environment, expect error status due to database not being initialized
+	expectedStatus := "error"
 	if response.Status != expectedStatus {
 		t.Errorf("Expected status '%s', got '%s'", expectedStatus, response.Status)
+	}
+
+	expectedDatabaseStatus := "error"
+	if response.Database != expectedDatabaseStatus {
+		t.Errorf("Expected database status '%s', got '%s'", expectedDatabaseStatus, response.Database)
 	}
 }
 
