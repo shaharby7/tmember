@@ -14,6 +14,12 @@ TMember is a simple application built using a monorepo architecture. The system 
 - **Shared_Library**: Common code modules that can be used across multiple applications within the monorepo
 - **Build_System**: The tooling responsible for compiling, testing, and packaging applications
 - **Development_Server**: Local server environment for running and testing applications during development
+- **Database_Service**: MySQL database container for persistent data storage
+- **User**: An individual person who can authenticate and access the system
+- **Organization**: A business entity that groups users and manages access to resources
+- **Organization_Membership**: The relationship between a User and Organization defining their role and permissions
+- **Authentication_System**: The component responsible for user login, registration, and session management
+- **GORM**: Go Object-Relational Mapping library for database operations
 
 ## Requirements
 
@@ -110,3 +116,78 @@ TMember is a simple application built using a monorepo architecture. The system 
 4. THE Backend_Service SHALL receive the input text and return it unchanged in the response
 5. THE Frontend_Application SHALL display the echoed response from the Backend_Service to the user
 6. WHEN the echo request fails, THE Frontend_Application SHALL display an appropriate error message
+
+### Requirement 9: Database Infrastructure Setup
+
+**User Story:** As a developer, I want MySQL database integration with GORM, so that I can store and manage persistent application data.
+
+#### Acceptance Criteria
+
+1. THE Database_Service SHALL run MySQL in a Docker container
+2. THE Backend_Service SHALL connect to the Database_Service using GORM
+3. THE Database_Service SHALL persist data across container restarts
+4. THE Backend_Service SHALL handle database connection errors gracefully
+5. WHEN the application starts, THE Backend_Service SHALL automatically migrate database schemas
+
+### Requirement 10: User Authentication System
+
+**User Story:** As an unauthenticated person, I want to sign up and log in with email and password, so that I can access the application securely.
+
+#### Acceptance Criteria
+
+1. WHEN an unauthenticated user visits the application, THE Frontend_Application SHALL display a login/signup page
+2. THE Authentication_System SHALL require a valid email address for user registration
+3. THE Authentication_System SHALL require a password meeting security criteria for user registration
+4. WHEN a user registers, THE Authentication_System SHALL store the password as a secure hash
+5. THE Authentication_System SHALL create a new User record with unique email and hashed password
+6. WHEN a user logs in with valid credentials, THE Authentication_System SHALL create an authenticated session
+7. WHEN a user logs in with invalid credentials, THE Authentication_System SHALL reject the login attempt
+
+### Requirement 11: User Data Management
+
+**User Story:** As a system, I want to store user information securely, so that I can manage user accounts and authentication.
+
+#### Acceptance Criteria
+
+1. THE User SHALL have a unique numeric ID as the primary key
+2. THE User SHALL have a unique email address that serves as the login identifier
+3. THE User SHALL have a securely hashed password for authentication
+4. THE Backend_Service SHALL validate email format before storing User records
+5. THE Backend_Service SHALL prevent duplicate email addresses in the User table
+
+### Requirement 12: Organization Management System
+
+**User Story:** As an authenticated user, I want to create and manage organizations, so that I can organize my work and collaborate with others.
+
+#### Acceptance Criteria
+
+1. WHEN a new user completes registration, THE Frontend_Application SHALL suggest creating a new organization
+2. THE Organization SHALL require a unique name provided by the user
+3. WHEN an organization is created, THE Authentication_System SHALL automatically make the creator an admin
+4. THE Organization SHALL have a unique numeric ID as the primary key
+5. THE Organization SHALL store billing details as JSON data (initially null)
+
+### Requirement 13: Organization Membership Management
+
+**User Story:** As an authenticated user, I want to see and switch between organizations I belong to, so that I can work in different organizational contexts.
+
+#### Acceptance Criteria
+
+1. THE Frontend_Application SHALL display the current user's name and organization in the upper right corner
+2. WHEN a user clicks the organization selector, THE Frontend_Application SHALL show all organizations they belong to
+3. THE Frontend_Application SHALL allow users to switch between organizations they are members of
+4. THE Frontend_Application SHALL provide an option to create new organizations from the organization selector
+5. THE Organization_Membership SHALL define the relationship between User and Organization
+6. THE Organization_Membership SHALL specify whether the user is an "admin" or "member" of the organization
+
+### Requirement 14: Organization Access Control
+
+**User Story:** As a system, I want to manage user roles within organizations, so that I can control access and permissions appropriately.
+
+#### Acceptance Criteria
+
+1. THE Organization_Membership SHALL link a User ID to an Organization ID
+2. THE Organization_Membership SHALL specify the user's role as either "admin" or "member"
+3. WHEN a user creates an organization, THE Backend_Service SHALL automatically create an admin membership
+4. THE Backend_Service SHALL prevent users from accessing organizations they are not members of
+5. THE Backend_Service SHALL allow organization admins to manage member roles

@@ -27,7 +27,6 @@ frontend/.env.local
 frontend/.env.*.local
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -115,8 +114,6 @@ tmp/
 temp/
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 *.suo
 *.ntvs*

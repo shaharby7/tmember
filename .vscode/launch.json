@@ -1,0 +1,60 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Go Backend",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "./backend/cmd/server",
+      "env": {
+        "GO_ENV": "development",
+        "PORT": "8080"
+      },
+      "args": [],
+      "showLog": true,
+      "trace": "verbose",
+      "logOutput": "rpc"
+    },
+    {
+      "name": "Debug Go Backend (Attach to Container)",
+      "type": "go",
+      "request": "attach",
+      "mode": "remote",
+      "remotePath": "/app",
+      "port": 2345,
+      "host": "127.0.0.1",
+      "showLog": true,
+      "trace": "verbose",
+      "logOutput": "rpc",
+      "retryCount": 3,
+      "retryDelayMs": 1000,
+      "substitutePath": [
+        {
+          "from": "/app",
+          "to": "./backend/"
+        }
+      ]
+    },
+    {
+      "name": "Debug Frontend (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "./frontend/src",
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Full Stack",
+      "configurations": [
+        "Debug Go Backend",
+        "Debug Frontend (Chrome)"
+      ],
+      "stopAll": true
+    }
+  ]
+}
