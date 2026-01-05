@@ -6,9 +6,14 @@
     "test": "vitest --run",
     "test:watch": "vitest",
     "test:e2e": "vitest --run e2e-echo-workflow.test.js",
+    "test:auth": "vitest --run e2e-auth-workflow.test.js",
+    "test:org": "vitest --run e2e-organization-workflow.test.js",
     "test:hot-reload": "vitest --run hot-reload.test.js",
     "test:docker": "vitest --run docker-integration.test.js",
-    "test:all": "vitest --run"
+    "test:database": "vitest --run docker-integration.test.js --reporter=verbose",
+    "test:all": "vitest --run",
+    "test:workflows": "vitest --run e2e-auth-workflow.test.js e2e-organization-workflow.test.js",
+    "test:integration": "vitest --run docker-integration.test.js e2e-echo-workflow.test.js"
   },
   "devDependencies": {
     "vitest": "^4.0.16"

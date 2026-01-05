@@ -29,6 +29,7 @@ help:
 	@echo "  test-e2e         - Run end-to-end echo workflow tests"
 	@echo "  test-hot-reload  - Run hot reloading functionality tests"
 	@echo "  test-docker      - Run Docker environment tests"
+	@echo "  test-database    - Run database integration tests"
 	@echo "  test-all         - Run all tests including integration"
 	@echo ""
 	@echo "Code Quality:"
@@ -117,6 +118,12 @@ test-hot-reload:
 test-docker:
 	@echo "Running Docker integration tests..."
 	cd tests && npm run test:docker
+
+test-database:
+	@echo "Running database integration tests..."
+	cd tests && npm run test:database
+	@echo "Running backend database integration tests..."
+	cd backend && INTEGRATION_TEST=true go test -v ./internal/database/integration_test.go
 
 test-all: test-backend test-frontend test-integration
 

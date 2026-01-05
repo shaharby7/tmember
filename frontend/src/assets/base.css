@@ -32,6 +32,20 @@
 
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
+  --color-text-light: var(--vt-c-text-light-2);
+
+  --color-brand: #42b883;
+  --color-brand-dark: #369870;
+  --color-brand-light: rgba(66, 184, 131, 0.1);
+  --color-brand-soft: rgba(66, 184, 131, 0.05);
+  --color-brand-rgb: 66, 184, 131;
+
+  --color-danger: #e74c3c;
+  --color-danger-rgb: 231, 76, 60;
+
+  /* Layout variables */
+  --sidebar-width: 280px;
+  --topbar-height: 73px;
 
   --section-gap: 160px;
 }
@@ -47,6 +61,7 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+    --color-text-light: rgba(235, 235, 235, 0.4);
   }
 }
 

@@ -38,7 +38,7 @@ func (bd *BillingDetails) Scan(value interface{}) error {
 // Organization represents an organization in the system
 type Organization struct {
 	ID             uint            `json:"id" gorm:"primaryKey"`
-	Name           string          `json:"name" gorm:"uniqueIndex;not null" binding:"required"`
+	Name           string          `json:"name" gorm:"type:varchar(255);uniqueIndex;not null" binding:"required"`
 	BillingDetails *BillingDetails `json:"billing_details" gorm:"type:json"`
 	CreatedAt      time.Time       `json:"created_at"`
 	UpdatedAt      time.Time       `json:"updated_at"`
