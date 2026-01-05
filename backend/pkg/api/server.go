@@ -28,11 +28,13 @@ func NewServer() *Server {
 
 	// Register routes
 	mux.HandleFunc("/api/health", handlers.HealthHandler)
-	mux.HandleFunc("/api/echo", handlers.EchoHandler)
 
 	// Authentication routes
 	mux.HandleFunc("/api/auth/register", authHandlers.RegisterHandler)
 	mux.HandleFunc("/api/auth/login", authHandlers.LoginHandler)
+
+	// User routes (protected by auth middleware)
+	mux.Handle("/api/users/me", middleware.AuthMiddleware(http.HandlerFunc(authHandlers.GetCurrentUserHandler)))
 
 	// Organization routes (protected by auth middleware)
 	mux.Handle("/api/organizations", middleware.AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

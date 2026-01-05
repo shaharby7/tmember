@@ -10,37 +10,31 @@
   "go.buildTags": "",
   "go.testFlags": ["-v"],
   "go.testTimeout": "30s",
-  
+
   "typescript.preferences.includePackageJsonAutoImports": "auto",
   "typescript.suggest.autoImports": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
-  
+
   "vue.server.hybridMode": true,
   "vue.codeActions.enabled": true,
   "vue.complete.casing.tags": "kebab",
   "vue.complete.casing.props": "camel",
-  
+
   "eslint.workingDirectories": ["frontend"],
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue"
-  ],
-  
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
+
   "prettier.configPath": "./frontend/.prettierrc.json",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  
+
   "files.associations": {
     "*.toml": "toml",
     "Dockerfile.*": "dockerfile",
     "docker-compose*.yml": "dockercompose"
   },
-  
+
   "files.exclude": {
     "**/node_modules": true,
     "**/dist": true,
@@ -49,7 +43,7 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true
   },
-  
+
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,
@@ -57,7 +51,5 @@
     "**/.git": true
   },
   "kiroAgent.configureMCP": "Disabled",
-  "conventionalCommits.scopes": [
-    "repo"
-  ]
+  "conventionalCommits.scopes": ["repo", "users"]
 }

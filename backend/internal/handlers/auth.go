@@ -132,6 +132,47 @@ func (ah *AuthHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+// GetCurrentUserHandler returns the current user's information and organizations
+func (ah *AuthHandlers) GetCurrentUserHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeErrorResponse(w, http.StatusMethodNotAllowed, "Method not allowed", "METHOD_NOT_ALLOWED")
+		return
+	}
+
+	// Get user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("user_id").(uint)
+	if !ok {
+		writeErrorResponse(w, http.StatusUnauthorized, "User not authenticated", "NOT_AUTHENTICATED")
+		return
+	}
+
+	// Get user from database
+	var user models.User
+	if err := ah.DB.First(&user, userID).Error; err != nil {
+		writeErrorResponse(w, http.StatusNotFound, "User not found", "USER_NOT_FOUND")
+		return
+	}
+
+	// Get user's organizations
+	var organizations []models.Organization
+	if err := ah.DB.Joins("JOIN organization_memberships ON organizations.id = organization_memberships.organization_id").
+		Where("organization_memberships.user_id = ?", userID).
+		Find(&organizations).Error; err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, "Failed to fetch organizations", "ORGANIZATIONS_FETCH_ERROR")
+		return
+	}
+
+	// Return user and organizations
+	response := map[string]interface{}{
+		"user":          user,
+		"organizations": organizations,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
 // writeErrorResponse writes a JSON error response
 func writeErrorResponse(w http.ResponseWriter, statusCode int, message, code string) {
 	w.Header().Set("Content-Type", "application/json")

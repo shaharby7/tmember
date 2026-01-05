@@ -9,7 +9,7 @@ import (
 // User represents a user in the system
 type User struct {
 	ID           uint           `json:"id" gorm:"primaryKey"`
-	Email        string         `json:"email" gorm:"uniqueIndex;not null" binding:"required,email"`
+	Email        string         `json:"email" gorm:"type:varchar(255);uniqueIndex;not null" binding:"required,email"`
 	PasswordHash string         `json:"-" gorm:"not null"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
